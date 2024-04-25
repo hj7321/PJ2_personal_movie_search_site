@@ -47,8 +47,6 @@ const getData = async () => {
 
 getData();
 
-const movieBox = $movieContainer.querySelector(".movie-box");
-
-movieBox.addEventListener("click", (e) => {
-  console.log(e.target);
+$movieContainer.addEventListener("click", () => {
+  alert(`영화 ID: ${movie.id}`)
 })
