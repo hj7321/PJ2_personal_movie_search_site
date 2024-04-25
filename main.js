@@ -26,14 +26,16 @@ const loadJson = async () => {
 const getData = async () => {
   let res = await loadJson();
   console.log(res.results);
+
   res.results.forEach((movie) => {
+    let imgSrc = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
     let temp_html = `
     <div class="movie-box">
-      <img src="${movie.poster_path}" alt="" />
+      <img src=${imgSrc} alt="" />
       <div class="movie-info-box">
         <div class="title-score">
           <p class="title">${movie.title}</p>
-          <p class="score">${movie.vote_average}</p>
+          <p class="score">⭐️${movie.vote_average}</p>
         </div>
         <p>${movie.overview}</p>
       </div>
@@ -44,3 +46,9 @@ const getData = async () => {
 };
 
 getData();
+
+const movieBox = $movieContainer.querySelector(".movie-box");
+
+movieBox.addEventListener("click", (e) => {
+  console.log(e.target);
+})
