@@ -42,17 +42,29 @@ const makeMovieBox = async () => {
 
     $movieContainer.innerHTML += temp_html;
   });
-  // return res.results; // 다른 곳에서도 영화 정보를 쓰기 위해 리턴받음
 };
 
 makeMovieBox();
 
+
+// movieBoxes.forEach(movieBox => {
+//   movieBox.addEventListener("click", e => {
+//     alert("영화 ID: " + e.currentTarget.id);
+//   })
+// })
+
+// 문제점: 처음 누를 땐 alert 창이 안 뜨고, 두 번 눌렀을 때부터 정상 작동함...
 $movieContainer.addEventListener("click", (e) => {
-  const $movieBoxes = [...$movieContainer.getElementsByClassName("movie-box")];
-  console.log($movieBoxes);
-  // $movieBoxes.addEventListener("click", (e) => {
-  //   alert("영화 ID: " + e.currentTarget.id);
-  // });
+  let movieBoxes = $movieContainer.getElementsByClassName("movie-box");
+  console.log(movieBoxes);
+  console.log("테스트");
+
+  for(let i = 0; i < movieBoxes.length; i++) {
+    movieBoxes[i].addEventListener("click", e => {
+      alert("영화 ID: " + e.currentTarget.id);
+      e.stopPropagation();
+    })
+  }
 });
 
 // <해야 할 일>
