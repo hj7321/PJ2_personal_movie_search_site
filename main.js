@@ -1,4 +1,12 @@
+const $mainPage = document.getElementById("main-page");
 const $movieContainer = document.querySelector(".movie-container");
+const $searchBtn = document.querySelector(".search-btn");
+const $input = document.querySelector("input");
+const $upBtn = document.querySelector(".up-btn");
+
+$mainPage.addEventListener("click", () => {
+  // 메인 페이지로 가도록 -> 즉, 영화 데이터 전부가 나오도록
+})
 
 // TMDB 오픈 API를 이용하여 인기영화 데이터 가져오기
 const getMovieData = async () => {
@@ -42,34 +50,93 @@ const makeMovieBox = async () => {
 
     $movieContainer.innerHTML += temp_html;
   });
+  const movieBoxes = $movieContainer.getElementsByClassName("movie-box");
+  const movieInfo = res.results;
+
+  return { movieBoxes, movieInfo };
 };
 
-makeMovieBox();
-
-
-// movieBoxes.forEach(movieBox => {
-//   movieBox.addEventListener("click", e => {
-//     alert("영화 ID: " + e.currentTarget.id);
-//   })
-// })
-
-// 문제점: 처음 누를 땐 alert 창이 안 뜨고, 두 번 눌렀을 때부터 정상 작동함...
-$movieContainer.addEventListener("click", (e) => {
-  let movieBoxes = $movieContainer.getElementsByClassName("movie-box");
-  console.log(movieBoxes);
-  console.log("테스트");
-
-  for(let i = 0; i < movieBoxes.length; i++) {
-    movieBoxes[i].addEventListener("click", e => {
-      alert("영화 ID: " + e.currentTarget.id);
-      e.stopPropagation();
-    })
+const getMovieInfo = async () => {
+  const { movieBoxes, movieInfo } = await makeMovieBox();
+  if (movieBoxes) {
+    // 영화 카드 클릭 시 alert 창에 그에 맞는 영화 ID 띄우기
+    for (let i = 0; i < movieBoxes.length; i++) {
+      movieBoxes[i].addEventListener("click", (e) => {
+        alert("영화 ID: " + e.currentTarget.id);
+      });
+    }
   }
-});
+  if (movieBoxes && movieInfo) {
+    // 검색 버튼 클릭 시 화면에 영화 제목에 검색어가 포함되어 있는 영화만 띄우기
+    $searchBtn.addEventListener("click", () => {
+      // 이 부분이 겹침
+      if ($input.value.length === 0) {
+        alert("검색어를 입력해주세요.");
+        $input.focus();
+      } else {
+        $movieContainer.innerHTML = "";
+        // movie.title에 $input.value가 포함되어 있는 것들만 무비 컨테이너 안에 보여줌
+        movieInfo
+          .filter((movie) => movie.title.includes($input.value))
+          .forEach((movie) => {
+            let temp_html = `
+            <div class="movie-box" id=${movie.id}>
+              <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="" />
+              <div class="movie-info-box">
+                <div class="title-score">
+                  <p class="title">${movie.title}</p>
+                  <p class="score">⭐️${movie.vote_average}</p>
+                </div>
+                <p>${movie.overview}</p>
+              </div>
+            </div>`;
+
+            $movieContainer.innerHTML += temp_html;
+          });
+
+        $input.value = "";
+      }
+    });
+    $input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        // 엔터 키를 눌렀을 때 폼을 제출하거나 원하는 동작을 실행
+        e.preventDefault(); // 기본 동작(폼 제출) 방지
+        // 원하는 동작 수행
+        // 이 부분이 겹침
+        if ($input.value.length === 0) {
+          alert("검색어를 입력해주세요.");
+          $input.focus();
+        } else {
+          $movieContainer.innerHTML = "";
+          // movie.title에 $input.value가 포함되어 있는 것들만 무비 컨테이너 안에 보여줌
+          movieInfo
+            .filter((movie) => movie.title.includes($input.value))
+            .forEach((movie) => {
+              let temp_html = `
+              <div class="movie-box" id=${movie.id}>
+                <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="" />
+                <div class="movie-info-box">
+                  <div class="title-score">
+                    <p class="title">${movie.title}</p>
+                    <p class="score">⭐️${movie.vote_average}</p>
+                  </div>
+                  <p>${movie.overview}</p>
+                </div>
+              </div>`;
+
+              $movieContainer.innerHTML += temp_html;
+            });
+
+          $input.value = "";
+        }
+      }
+    });
+  }
+};
+
+getMovieInfo();
+
+// $upBtn.addEventListener("click", () => {});
 
 // <해야 할 일>
-// 1. 영화 카드를 클릭했을 때, 클릭한 영화 id를 나타내는 alert 창 띄우기
 // 2. 하단에 위로가기 화살표 아이콘 클릭했을 때 제일 상단으로 이동시키기
-//     - 위로가기 화살표 오른쪽으로 이동시키기!!
-// 3. 검색창에 입력한 값이 영화 제목에 들어있는 값이라면 그 영화 카드들만 띄우기
-//    - 검색버튼 클릭 시 실행되도록 (엔터키 눌러도 실행되도록)
