@@ -4,11 +4,12 @@ const $searchBtn = document.querySelector(".search-btn");
 const $input = document.querySelector("input");
 const $upBtn = document.querySelector(".up-btn");
 
-$mainPage.addEventListener("click", () => {
-  // 메인 페이지로 가도록 -> 즉, 영화 데이터 전부가 나오도록
-})
+// 전체 페이지 로드가 완료되었을 때 실행될 코드
+window.onload = () => {
+  $input.focus();
+};
 
-// TMDB 오픈 API를 이용하여 인기영화 데이터 가져오기
+// [함수] TMDB 오픈 API를 이용하여 인기영화 데이터 가져오는 함수
 const getMovieData = async () => {
   const options = {
     method: "GET",
@@ -30,12 +31,15 @@ const getMovieData = async () => {
   }
 };
 
-// 영화 컨테이너 안의 영화 박스에 영화 정보 넣기
+// [함수] 영화 컨테이너 안에 영화 박스 만들어서 영화 정보 넣는 함수
 const makeMovieBox = async () => {
-  let res = await getMovieData();
-  console.log(res.results);
+  const movieInfo = await getMovieData(); // 영화 데이터 불러오기
+  console.log("makeMovieBox() 함수: movieInfo ↓");
+  console.log(movieInfo);
+  console.log("makeMovieBox() 함수: movieInfo.results ↓");
+  console.log(movieInfo.results);
 
-  res.results.forEach((movie) => {
+  movieInfo.results.forEach((movie) => {
     let temp_html = `
     <div class="movie-box" id=${movie.id}>
       <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="" />
@@ -50,93 +54,90 @@ const makeMovieBox = async () => {
 
     $movieContainer.innerHTML += temp_html;
   });
-  const movieBoxes = $movieContainer.getElementsByClassName("movie-box");
-  const movieInfo = res.results;
-
-  return { movieBoxes, movieInfo };
+  getMovieId();
 };
 
-const getMovieInfo = async () => {
-  const { movieBoxes, movieInfo } = await makeMovieBox();
+// [함수] 클릭한 영화 카드의 영화 아이디를 alert 창에 띄우는 함수
+const getMovieId = () => {
+  const movieBoxes = $movieContainer.getElementsByClassName("movie-box");
+  console.log("getMovieId() 함수: movieBoxes ↓");
+  console.log(movieBoxes);
+
   if (movieBoxes) {
     // 영화 카드 클릭 시 alert 창에 그에 맞는 영화 ID 띄우기
     for (let i = 0; i < movieBoxes.length; i++) {
       movieBoxes[i].addEventListener("click", (e) => {
+        console.log("getMovieId() 함수: e.target ↓");
+        console.log(e.target);
         alert("영화 ID: " + e.currentTarget.id);
       });
     }
   }
-  if (movieBoxes && movieInfo) {
-    // 검색 버튼 클릭 시 화면에 영화 제목에 검색어가 포함되어 있는 영화만 띄우기
+};
+
+// [함수] 검색창에 검색어를 입력하는 함수
+const searchMovie = async () => {
+  const movieInfo = await getMovieData(); // 영화 데이터 불러오기
+
+  if (movieInfo) {
+    // 검색 버튼을 클릭했을 때의 이벤트 리스너
     $searchBtn.addEventListener("click", () => {
-      // 이 부분이 겹침
-      if ($input.value.length === 0) {
-        alert("검색어를 입력해주세요.");
-        $input.focus();
-      } else {
-        $movieContainer.innerHTML = "";
-        // movie.title에 $input.value가 포함되어 있는 것들만 무비 컨테이너 안에 보여줌
-        movieInfo
-          .filter((movie) => movie.title.includes($input.value))
-          .forEach((movie) => {
-            let temp_html = `
-            <div class="movie-box" id=${movie.id}>
-              <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="" />
-              <div class="movie-info-box">
-                <div class="title-score">
-                  <p class="title">${movie.title}</p>
-                  <p class="score">⭐️${movie.vote_average}</p>
-                </div>
-                <p>${movie.overview}</p>
-              </div>
-            </div>`;
-
-            $movieContainer.innerHTML += temp_html;
-          });
-
-        $input.value = "";
-      }
+      searchStructure(movieInfo.results);
     });
+    // 엔터 키를 눌렀을 때의 이벤트 리스너
     $input.addEventListener("keydown", (e) => {
       if (e.key === "Enter") {
-        // 엔터 키를 눌렀을 때 폼을 제출하거나 원하는 동작을 실행
         e.preventDefault(); // 기본 동작(폼 제출) 방지
-        // 원하는 동작 수행
-        // 이 부분이 겹침
-        if ($input.value.length === 0) {
-          alert("검색어를 입력해주세요.");
-          $input.focus();
-        } else {
-          $movieContainer.innerHTML = "";
-          // movie.title에 $input.value가 포함되어 있는 것들만 무비 컨테이너 안에 보여줌
-          movieInfo
-            .filter((movie) => movie.title.includes($input.value))
-            .forEach((movie) => {
-              let temp_html = `
-              <div class="movie-box" id=${movie.id}>
-                <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="" />
-                <div class="movie-info-box">
-                  <div class="title-score">
-                    <p class="title">${movie.title}</p>
-                    <p class="score">⭐️${movie.vote_average}</p>
-                  </div>
-                  <p>${movie.overview}</p>
-                </div>
-              </div>`;
-
-              $movieContainer.innerHTML += temp_html;
-            });
-
-          $input.value = "";
-        }
+        searchStructure(movieInfo.results);
       }
     });
   }
 };
 
-getMovieInfo();
+// [함수] 영화 검색 형식에 대한 함수(겹치는 부분)
+const searchStructure = (movieArray) => {
+  if ($input.value === "") {
+    alert("검색어를 입력해주세요.");
+    $input.focus();
+  } else {
+    $movieContainer.innerHTML = "";
+    // movie.title에 $input.value가 포함되어 있는 것들만 무비 컨테이너 안에 보여줌
+    movieArray
+      .filter((movie) => movie.title.includes($input.value))
+      .forEach((movie) => {
+        let temp_html = `
+        <div class="movie-box" id=${movie.id}>
+          <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="" />
+          <div class="movie-info-box">
+            <div class="title-score">
+              <p class="title">${movie.title}</p>
+              <p class="score">⭐️${movie.vote_average}</p>
+            </div>
+            <p>${movie.overview}</p>
+          </div>
+        </div>`;
 
-// $upBtn.addEventListener("click", () => {});
+        $movieContainer.innerHTML += temp_html;
+      });
 
-// <해야 할 일>
-// 2. 하단에 위로가기 화살표 아이콘 클릭했을 때 제일 상단으로 이동시키기
+    $input.value = "";
+    getMovieId();
+  }
+};
+
+makeMovieBox();
+searchMovie();
+
+// 헤더에 있는 제목 글씨 클릭했을 때의 이벤트 리스너
+$mainPage.addEventListener("click", () => {
+  $movieContainer.innerHTML = "";
+  makeMovieBox();
+});
+
+// 위로가기 버튼(위쪽을 가리키는 화살표 버튼)을 클릭했을 때의 이벤트 리스너
+$upBtn.addEventListener("click", () => {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
+});
