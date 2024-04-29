@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Bagel+Fat+One&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR&display=swap");
 
 * {
   background-color: black;
@@ -10,7 +11,46 @@ header {
   height: 25vh;
 }
 
-header p {
+.modal-box {
+  display: none;
+}
+
+.modal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  position: fixed;
+  top: 0;
+  right: 50%;
+  transform: translate(50%, 0%);
+  width: 30vw;
+  height: 20vh;
+  padding: 10px;
+  border-radius: 10px;
+  background-color: rgb(234, 230, 230);
+  font-size: 20px;
+}
+
+.modal p {
+  font-family: "IBM Plex Sans KR", sans-serif;
+  font-style: normal;
+}
+
+.modal #check-btn {
+  border-radius: 5px;
+  background-color: #e7344e;
+  border: 0;
+  color: white;
+  cursor: pointer;
+  font-size: 15px;
+  font-family: "IBM Plex Sans KR", sans-serif;
+  font-style: normal;
+  width: 60px;
+  height: 30px;
+}
+
+header #main-page {
   font-size: 60px;
   font-weight: bold;
   color: #e7344e;
@@ -19,7 +59,7 @@ header p {
   text-align: center;
 }
 
-header p:hover {
+header #main-page:hover {
   cursor: pointer;
 }
 
@@ -37,6 +77,8 @@ header p:hover {
   width: 180px;
   height: 30px;
   font-size: 15px;
+  font-family: "IBM Plex Sans KR", sans-serif;
+  font-style: normal;
 }
 
 .search-container .search-btn {
@@ -44,6 +86,9 @@ header p:hover {
   background-color: #e7344e;
   border: 0;
   color: white;
+  font-size: 15px;
+  font-family: "IBM Plex Sans KR", sans-serif;
+  font-style: normal;
   cursor: pointer;
 }
 
@@ -60,6 +105,7 @@ section {
   flex-wrap: wrap;
 }
 
+.modal p,
 .movie-box,
 .movie-box img,
 .movie-info-box,
@@ -120,9 +166,10 @@ section {
 .up-btn {
   position: fixed;
   /* z-index: 100; */
-  top: 41vw;
+  top: 90%;
   right: 5px;
   background-color: #e7344e;
+  opacity: 0.7;
   font-size: 30px;
   color: white;
   text-align: center;
@@ -134,6 +181,7 @@ section {
 
 .up-btn:hover {
   cursor: pointer;
+  opacity: 1;
 }
 
 footer {
