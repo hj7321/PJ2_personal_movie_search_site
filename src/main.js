@@ -15,6 +15,8 @@ window.onload = () => {
 $mainPage.addEventListener("click", () => {
   $movieContainer.innerHTML = "";
   makeMovieBox();
+  $input.value = "";
+  $input.focus();
 });
 
 $upBtn.addEventListener("click", () => {
@@ -31,6 +33,7 @@ $movieContainer.addEventListener("click", (e) => {
 $form.addEventListener("submit", (e) => {
   e.preventDefault();
   searchMovie($input.value);
+  $input.value = "";
 });
 
 makeMovieBox();

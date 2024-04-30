@@ -86,4 +86,5 @@
 
 ## 10. [modal.js] 모달 창 구현
 - 기존의 alert 창 대신 나만의 모달창을 구현했다.
-- `openModal()` 함수를 호출하면 `$modalBox.style.display = "flex"` 코드를 통해 모달창을 열고, 모달창에 있는 확인 버튼을 클릭하면 `$modalBox.style.display = "none"` 코드를 통해 모달창을 닫도록 구현했다.
+- `openModal()` 함수를 호출하면 `$modalBox.style.display = "flex"` 코드를 통해 모달창이 열리도록 구현했다.
+- 모달창에 있는 확인 버튼에 포커스를 두어 버튼을 클릭하거나 엔터를 누르면 `$modalBox.style.display = "none"` 코드를 통해 모달창이 닫히도록 구현했다.

@@ -4,5 +4,8 @@ export const openModal = (content) => {
   const $checkBtn = document.querySelector(".check-btn");
   $modalBox.style.display = "flex";
   $message.textContent = content;
-  $checkBtn.addEventListener("click", () => ($modalBox.style.display = "none"));
+  $checkBtn.focus();
+  $checkBtn.addEventListener("click", () => {
+    $modalBox.style.display = "none";
+  });
 };
