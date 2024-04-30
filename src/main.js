@@ -1,12 +1,33 @@
+const $input = document.querySelector("input");
 const $mainPage = document.getElementById("main-page");
+const $upBtn = document.querySelector(".up-btn");
 const $movieContainer = document.querySelector(".movie-container");
 const $form = document.querySelector("form");
-const $input = document.querySelector("input");
-const $upBtn = document.querySelector(".up-btn");
 
 window.onload = () => {
   $input.focus();
 };
+
+$mainPage.addEventListener("click", () => {
+  $movieContainer.innerHTML = "";
+  makeMovieBox();
+});
+
+$upBtn.addEventListener("click", () => {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
+});
+
+$movieContainer.addEventListener("click", (e) => {
+  openModal(`영화 ID: ${e.target.closest("li").id}`);
+});
+
+$form.addEventListener("submit", (e) => {
+  e.preventDefault();
+  searchMovie($input.value);
+});
 
 const fetchMovieData = async () => {
   const options = {
@@ -46,62 +67,29 @@ const makeMovieBox = async () => {
     .join("");
 };
 
-const getMovieId = (e) => {
-  if (e.target === $movieContainer) return;
-  if (e.target.closest("li")) alert(`영화 ID: ${e.target.closest("li").id}`);
+const openModal = (content) => {
+  const $modalBox = document.querySelector(".modal-box");
+  const $message = document.querySelector(".message");
+  const $checkBtn = document.querySelector(".check-btn");
+  $modalBox.style.display = "flex";
+  $message.textContent = content;
+  $checkBtn.addEventListener("click", () => ($modalBox.style.display = "none"));
 };
 
-$movieContainer.addEventListener("click", getMovieId);
-
-const searchMovie = async () => {
-  const movieInfo = await fetchMovieData();
-  $form.addEventListener("submit", (e) => {
-    e.preventDefault();
-    searchStructure(movieInfo);
-  });
-};
-
-const searchStructure = (movieArray) => {
-  if ($input.value === "") {
-    alert("검색어를 입력해주세요.");
+const searchMovie = (value) => {
+  if (value === "") {
+    openModal("검색어를 입력해주세요.");
     $input.focus();
   } else {
-    $movieContainer.innerHTML = "";
-    movieArray
-      .filter((movie) =>
-        movie.title.toUpperCase().includes($input.value.toUpperCase())
-      )
-      .forEach((movie) => {
-        let temp_html = `
-        <li class="movie-box" id=${movie.id}>
-          <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="" />
-          <div class="movie-info-box">
-            <div class="title-score">
-              <p class="title">${movie.title}</p>
-              <p class="score">⭐️${movie.vote_average}</p>
-            </div>
-            <p>${movie.overview}</p>
-          </div>
-        </li>`;
-
-        $movieContainer.innerHTML += temp_html;
-      });
-
-    $input.value = "";
+    const $movieBox = document.querySelectorAll(".movie-box");
+    $movieBox.forEach((box) => {
+      const title = box.querySelector(".title").textContent.toLowerCase();
+      const searchValue = value.toLowerCase();
+      if (title.includes(searchValue)) box.style.display = "flex";
+      else box.style.display = "none";
+    });
+    value = "";
   }
 };
 
 makeMovieBox();
-searchMovie();
-
-$mainPage.addEventListener("click", () => {
-  $movieContainer.innerHTML = "";
-  makeMovieBox();
-});
-
-$upBtn.addEventListener("click", () => {
-  window.scrollTo({
-    top: 0,
-    behavior: "smooth",
-  });
-});
