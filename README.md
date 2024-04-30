@@ -4,6 +4,10 @@
 ## 1. assets, src, style 폴더 생성
 - `assets 폴더` : prettier 설정 파일
 - `src 폴더` : 자바스크립트 파일
+  - `main.js` : 아래의 파일들을 import하여 실행하는 주요 파일
+  - `modal.js` : 모달 창 구현
+  - `movie.js` : 영화 데이터 fetch 및 영화 박스 생성
+  - `search.js` : 영화 검색 기능 구현
 - `style 폴더` : css 파일
 
 ## 2. [index.html] 시맨틱 태그로 변경
@@ -35,7 +39,7 @@
   });
   ```
 
-## 6. [main.js] `fetchMovieData()` 함수에서 구조 분해 할당 사용
+## 6. [movie.js] `fetchMovieData()` 함수에서 구조 분해 할당 사용
 - 구조 분해 할당을 사용하여 자바스크립트 객체에서 필요한 속성인 `results`만 가져오도록 구현하여 `fetchMovieData()` 함수를 호출한 코드에서 번거롭게 `.results`를 쓰지 않아도 된다.
 - 변경 전 코드
   ```javascript
@@ -56,11 +60,11 @@
   return results;
   ```
 
-## 7. [main.js] `makeMovieBox()` 함수에서 배열 메서드 사용
+## 7. [movie.js] `makeMovieBox()` 함수에서 배열 메서드 사용
 - `map()` 메서드와 `join()` 메서드를 사용하여 변수를 선언하지 않고 바로 `$movieContainer.innerHTML`로 영화 박스(movie-box)가 들어가도록 구현했다.
 - `join()` 메서드 안의 구분자를 ""(빈 문자열)로 설정하여 영화 박스들이 구분자 없이 바로 붙도록 설정했다.
 
-## 8. [main.js] `searchStructure()` 함수 삭제 및 `searchMovie()` 함수 내용 변경
+## 8. [search.js] `searchStructure()` 함수 삭제 및 `searchMovie()` 함수 내용 변경
 - 변경 전 내용
   - `searchMovie()` 함수는 검색창에 검색어를 입력하여 제출하는 기능을 가졌었다.
   - `searchStructure()` 함수는 영화 검색 형식에 대한 함수였다.
@@ -80,4 +84,6 @@
   - **동적 로딩** : `import()` 함수를 사용하여 필요에 따라 모듈을 동적으로 로드할 수 있어서, 애플리케이션의 초기 로딩 시간을 줄이고 필요한 모듈만 로드하여 성능을 최적화했다.
   - **크로스 오리진 요청** : 기본적으로 CORS(Cross-Origin Resource Sharing) 정책에 따라 요청되어, 다른 출처의 모듈을 로드할 때 보안을 유지했다.
 
-## 10. [main.js] 모달 창 구현
+## 10. [modal.js] 모달 창 구현
+- 기존의 alert 창 대신 나만의 모달창을 구현했다.
+- `openModal()` 함수를 호출하면 `$modalBox.style.display = "flex"` 코드를 통해 모달창을 열고, 모달창에 있는 확인 버튼을 클릭하면 `$modalBox.style.display = "none"` 코드를 통해 모달창을 닫도록 구현했다.
