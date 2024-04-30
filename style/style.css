@@ -98,6 +98,16 @@ section {
   padding: 10px 30px;
 }
 
+ul, li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+
 .movie-container {
   /* border: 3px solid palevioletred; */
   display: flex;
