@@ -14,13 +14,14 @@ const fetchMovieData = async () => {
     headers: {
       accept: "application/json",
       Authorization:
-        "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiMzUwZGE1MWJhNmVkMjdlYzlmMDZjNzkzNDdlZTQyNSIsInN1YiI6IjY2MjVkNDQ2ZTI5NWI0MDE2NDlhNTZmYyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.LwKRpRWLt3lSImtcWOQiis4LAkBC1o-OtFFjJUZhW-s"
-    }
+        "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiMzUwZGE1MWJhNmVkMjdlYzlmMDZjNzkzNDdlZTQyNSIsInN1YiI6IjY2MjVkNDQ2ZTI5NWI0MDE2NDlhNTZmYyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.LwKRpRWLt3lSImtcWOQiis4LAkBC1o-OtFFjJUZhW-s",
+    },
   };
 
-  const { results } = await fetch("https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1", options).then(
-    (response) => response.json()
-  );
+  const { results } = await fetch(
+    "https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1",
+    options
+  ).then((response) => response.json());
 
   return results;
 };
@@ -28,22 +29,29 @@ const fetchMovieData = async () => {
 const makeMovieBox = async () => {
   const movieInfo = await fetchMovieData();
 
-  movieInfo.forEach((movie) => {
-    let temp_html = `
-    <li class="movie-box" onclick="alert('영화 ID: ${movie.id}')">
-      <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="" />
-      <div class="movie-info-box">
-        <div class="title-score">
-          <p class="title">${movie.title}</p>
-          <p class="score">⭐️${movie.vote_average}</p>
-        </div>
-        <p>${movie.overview}</p>
-      </div>
-    </li>`;
-
-    $movieContainer.innerHTML += temp_html;
-  });
+  $movieContainer.innerHTML = movieInfo
+    .map(
+      (movie) => `
+        <li class="movie-box" id=${movie.id}>
+          <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="" />
+          <div class="movie-info-box">
+            <div class="title-score">
+              <p class="title">${movie.title}</p>
+              <p class="score">⭐️${movie.vote_average}</p>
+            </div>
+            <p>${movie.overview}</p>
+          </div>
+        </li>`
+    )
+    .join("");
 };
+
+const getMovieId = (e) => {
+  if (e.target === $movieContainer) return;
+  if (e.target.closest("li")) alert(`영화 ID: ${e.target.closest("li").id}`);
+};
+
+$movieContainer.addEventListener("click", getMovieId);
 
 const searchMovie = async () => {
   const movieInfo = await fetchMovieData();
@@ -60,10 +68,12 @@ const searchStructure = (movieArray) => {
   } else {
     $movieContainer.innerHTML = "";
     movieArray
-      .filter((movie) => movie.title.toUpperCase().includes($input.value.toUpperCase()))
+      .filter((movie) =>
+        movie.title.toUpperCase().includes($input.value.toUpperCase())
+      )
       .forEach((movie) => {
         let temp_html = `
-        <li class="movie-box" onclick="alert('영화 ID: ${movie.id}')">
+        <li class="movie-box" id=${movie.id}>
           <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="" />
           <div class="movie-info-box">
             <div class="title-score">
@@ -92,6 +102,6 @@ $mainPage.addEventListener("click", () => {
 $upBtn.addEventListener("click", () => {
   window.scrollTo({
     top: 0,
-    behavior: "smooth"
+    behavior: "smooth",
   });
 });
